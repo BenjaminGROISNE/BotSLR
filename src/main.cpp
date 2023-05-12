@@ -3,16 +3,17 @@
 #include <fstream>
 #include <tesseract/baseapi.h>
 #include <leptonica/allheaders.h>
+#include <fstream>
 #include "ocr.h"
 #include <Windows.h>
 #include <TlHelp32.h>
 #include <ctime>
 using namespace cv;
-using namespace std;
+
 using namespace tesseract;
 
 void time() {
-    auto currentTime = std::chrono::system_clock::now();
+   auto currentTime = std::chrono::system_clock::now();
 
     // Conversion du temps en un format lisible
     std::time_t currentTimeT = std::chrono::system_clock::to_time_t(currentTime);
@@ -64,28 +65,30 @@ void launchEmulator(const char* programPath, fadb adb) {
 
 void detect_image(fadb& adb, fopencv& op, SLRD& sl) {
     while (true) {
-
-        while (sl.findclickEvents(sl.busy));
+        if (sl.endmacro)break;
+        sl.findclickEvents(sl.busy);
 
         if (sl.findEvents(sl.waitconnexion)) {
             cout <<"X: " << sl.getEventx()<<endl;
             cout << "Y: " << sl.getEventy()<<endl;
+           // sl.findclick(sl.previousobject);
             sl.waitMacro = true;
         }
         else sl.waitMacro = false;
-        std::this_thread::sleep_for(std::chrono::milliseconds(2000)); // attend 100ms
+      //  std::this_thread::sleep_for(std::chrono::milliseconds(2000)); // attend 100ms
     }
 }
 
 void stuck(SLRD&sl, int& MAXREBOOT) {
     while (true) {
+        if (sl.endmacro)break;
         if (sl.getRebootCount() >= MAXREBOOT) {
             std::cout << "Relance du jeu\n"<<endl;
-            sl.setRebootCount(0);
             sl.restartMacro = true;
         }
-        std::this_thread::sleep_for(std::chrono::seconds(1)); // attend 1s
-        cout << "RebootCount:" << sl.getRebootCount()<<endl;
+       
+       // std::this_thread::sleep_for(std::chrono::seconds(1)); // attend 1s
+        //cout << "RebootCount:" << sl.getRebootCount()<<endl;
     }
 }
 
@@ -98,22 +101,21 @@ int main()
     ShowWindow(hWnd, SW_SHOW);
     fadb adb;
     fopencv op;
-    ocr api;
+   ocr api;
     const char* EmulatorPath = "C:/Program Files/BlueStacks_nxt/HD-Player.exe";
     int dimX = 0;
     int dimY = 0;
-    int MAXREBOOT = 10;
-   // launchEmulator(EmulatorPath,adb);
+    int MAXREBOOT = 15;
+   //launchEmulator(EmulatorPath,adb);
     adb.setDim(dimX, dimY);
     SLRD sl(dimX, dimY);
     bool stopMacroGame = false;
     std::thread image_detection_thread(detect_image, std::ref(adb), std::ref(op), std::ref(sl));
-    std::thread not_detected_count_check_thread(stuck, std::ref(sl), std::ref(MAXREBOOT));
+   std::thread not_detected_count_check_thread(stuck, std::ref(sl), std::ref(MAXREBOOT));
     sl.macroLoop();
-    
-    image_detection_thread.join();
-    not_detected_count_check_thread.join();
 
+    image_detection_thread.join();
+   not_detected_count_check_thread.join();
     return 0;
 }
 

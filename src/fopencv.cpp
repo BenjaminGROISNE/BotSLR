@@ -101,8 +101,8 @@ bool fopencv::findImage(std::string tempimg,std::string backgroundimage, int& x,
             std::cout << "found maxVal: "<<maxVal<<" " << tempimg << std::endl;
             return true;
         }
-        precision -= 0.03;
-        if (precision < 0.65) {
+        precision -= 0.08;
+        if (precision < 0.66) {
             std::cout << "not found maxVal: "<<maxVal<<" " << tempimg << std::endl;;
             return false;
         }
@@ -133,7 +133,7 @@ bool fopencv::findMultipleImage(std::string tempimg) {
             tab.clear();
              std::cout << "found maxVal: " << maxVal << " " << tempimg << std::endl;
         }
-        precision -= 0.03;
+        precision -= 0.06;
         if (precision < 0.68) {
             std::cout << "not found maxVal: " << maxVal << " " << tempimg << std::endl;;
             if (!listcoords.empty())return true;

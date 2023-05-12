@@ -93,7 +93,7 @@ void fadb::screenshotEvents() {
 
 }
 void fadb::connect() {
-    system("adb connect localhost");
+    system("adb connect 127.0.0.1");
 }
 
 string fadb::getPID(string package) {
