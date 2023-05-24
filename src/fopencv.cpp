@@ -81,7 +81,7 @@ void fopencv::showImgtest(std::string path) {
 }
 
 
-bool fopencv::findImage(std::string tempimg,std::string backgroundimage, int& x, int& y) {
+bool fopencv::findImage(std::string tempimg,std::string backgroundimage, int x, int y) {
     cv::Mat templateImg = cv::imread(tempimg, cv::IMREAD_COLOR);
 
     cv::Mat background = cv::imread(backgroundimage, cv::IMREAD_COLOR);
@@ -109,17 +109,17 @@ bool fopencv::findImage(std::string tempimg,std::string backgroundimage, int& x,
     }
 }
 
-bool fopencv::findMultipleImage(std::string tempimg) {
+bool fopencv::findMultipleImage(std::string tempimg, std::vector<Coords>&listcoords) {
     listcoords.clear();
     cv::Mat templateImg = cv::imread(tempimg, cv::IMREAD_COLOR);
     cv::Mat background = cv::imread("./img/screenshot.png", cv::IMREAD_COLOR);
     double precision = 0.9;
     double minVal, maxVal;
     cv::Point minLoc, maxLoc;
-    std::vector<int>tab;
-    tab.clear();
+    Coords tab;
     while (true) {
         cv::Mat result;
+        bool present=false;
         cv::matchTemplate(background, templateImg, result, cv::TM_CCOEFF_NORMED);
 
         minMaxLoc(result, &minVal, &maxVal, &minLoc, &maxLoc);
@@ -127,12 +127,18 @@ bool fopencv::findMultipleImage(std::string tempimg) {
             
             cv::Point topLeft = maxLoc;
             cv::Point bottomRight(topLeft.x + templateImg.cols, topLeft.y + templateImg.rows);
-            tab.push_back((topLeft.x + bottomRight.x) / 2);
-            tab.push_back((topLeft.y + bottomRight.y) / 2);
-            listcoords.push_back(tab);
-            tab.clear();
-             std::cout << "found maxVal: " << maxVal << " " << tempimg << std::endl;
+            tab.x=(topLeft.x + bottomRight.x) / 2;
+            tab.y=(topLeft.y + bottomRight.y) / 2;
+            std::cout << "X: " << tab.x;
+            std::cout << " Y: " << tab.y;
+            for (int i = 0; i < listcoords.size(); ++i) {
+                if (listcoords[i].x == tab.x && listcoords[i].y == tab.y)present = true;
+            }
+            if(!present)listcoords.push_back(tab);
+            std::cout << "found maxVal: " << maxVal << " " << tempimg << std::endl;
         }
+
+
         precision -= 0.06;
         if (precision < 0.68) {
             std::cout << "not found maxVal: " << maxVal << " " << tempimg << std::endl;;
@@ -171,6 +177,4 @@ bool fopencv::checkImage(std::string tempimg) {
     }
 }
 
-std::vector<std::vector<int>> fopencv::getCoords() {
-    return listcoords;
-}
+

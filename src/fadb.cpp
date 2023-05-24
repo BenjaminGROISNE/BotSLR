@@ -93,7 +93,10 @@ void fadb::screenshotEvents() {
 
 }
 void fadb::connect() {
-    system("adb connect 127.0.0.1");
+
+   // system("adb disconnect 127.0.0.1");
+   // system("adb connect localhost");
+    system("adb connect emulator-5554");
 }
 
 string fadb::getPID(string package) {

@@ -2,9 +2,9 @@
 
 
 SLRD::SLRD(int SizeX,int SizeY) {
-    cx = cy =eventy=eventx= 0;
-    MAIL = FRIENDS = HELL= ICEFIRE= TOURNAMENT= BAG= HERB= RACE= THEATER= MYSTERY= PAGODA= XIAOWU= ENERGY= TASKS= ABYSS= TYRANT= ELEMENT= TREANT = false;
-    HELL = true;
+    C.x = C.y =eventy=eventx= 0;
+    MAIL = FRIENDS = HELL= ICEFIRE= BAG= HERB= RACE= THEATER= MYSTERY= XIAOWU= TRIAL = TASKS= TREANT= ABYSS= ENERGY = PAGODA = TYRANT= ELEMENT= TOURNAMENT=DISPATCH = false;
+    TREANT=true;
     dimX = SizeX;
     dimY = SizeY;
     endmacro = false;
@@ -31,70 +31,86 @@ void SLRD::macroLoop() {
     while (true) {
         switch (restartMacro) {
         case true:
-            //startSLRD();
-            restartMacro = false;
+            startSLRD();
+            //restartMacro = false;
             break;
         case false:
             if (HELL) {
                 doHell();
-                break;
-            }
-            if (BAG) {
-                getBag();
-                break;
-            }
-            if (MAIL) {
-                doMail();
-                break;
-            }
-            if (FRIENDS) {
-                doFriends();
+                HELL = false;
                 break;
             }
             if (ICEFIRE) {
                 doIcefire();
+                ICEFIRE = false;
+                break;
+            }
+            if (MAIL) {
+                doMail();
+                MAIL = false;
+                break;
+            }
+            if (FRIENDS) {
+                doFriends();
+                FRIENDS = false;
+                break;
+            }
+            if (BAG) {
+                getBag();
+                BAG = false;
+                break;
+            }
+            if (THEATER) {
+                doTheater();
+                THEATER = false;
+                break;
+            }
+            if (MYSTERY) {
+                doMystery();
+                MYSTERY = false;
+                break;
+            }
+            if (XIAOWU) {
+                doXiao();
+                XIAOWU = false;
                 break;
             }
             if (DISPATCH) {
                 doDispatch();
+                DISPATCH = false;
+                break;
+            }
+            if (HERB) {
+                doHerb();
+                HERB = false;
+                break;
+            }
+            if (RACE) {
+                doRace();
+                RACE = false;
+                break;
+            }
+            if (TASKS) {
+                doTasks();
+                TASKS = false;
                 break;
             }
             if (TOURNAMENT) {
 
                 break;
             }
-            if (HERB) {
-                doHerb();
-                break;
-            }
-            if (RACE) {
-                doRace();
-                break;
-            }
-            if (THEATER) {
-                doTheater();
-                break;
-            }
-            if (MYSTERY) {
-                doMystery();
-                break;
-            }
+
+
             if (PAGODA) {
 
                 break;
             }
-            if (XIAOWU) {
-                doXiao();
-                break;
-            }
+
             if (ENERGY) {
 
                 break;
             }
-            if (TASKS) {
-                doTasks();
-                break;
-            }
+
             if (ABYSS) {
 
                 break;
@@ -108,7 +124,11 @@ void SLRD::macroLoop() {
                 break;
             }
             if (TREANT) {
-
+                doTreant();
+                break;
+            }
+            if (TRIAL) {
+                doTrial();
                 break;
             }
         } 
@@ -170,6 +190,7 @@ void SLRD::goHome() {
         }
     }
     catch (int e) {
+        std::cout << "error";
         return;
     }
 }
@@ -178,15 +199,68 @@ void SLRD::doMystery() {
     try {
         goHome();
         while (!findclick(mysterychest));
-        for (int i = 0; i < 3; ++i) {
+        for (int i = 0; i < 6; ++i) {
             while (!findclick(watchadmystery));
             while (!find(adwatched));
             adb.wait(1000);
-            while (!findclick(crossad));
+            while (!findclick(crossad)) {
+                if (!findclick(crossad2))break;
+            }
             while (!findclick(congrats));
         }
         MYSTERY = false;
         while (!findclick(croixmenu));
+        goHome();
+    }
+    catch (int e) {
+        return;
+    }
+}
+
+void SLRD::doTreant() {
+    try{
+        bool sweep = true;
+        bool attack = false;
+        goHome();
+        while (!findclick(treant)) {
+            swiperightmenu();
+        }
+        while (findclick(treant));
+        while (!findclick(icontreant)) {
+            if (findclick(icontreantlight))break;
+        }
+        while (!findclick(fighttreant));
+        while (findclick(fighttreant));
+        while (!findclick(sweeptreant)&&sweep==true) {
+            while (findclick(battle)) {
+                attack = true;
+                sweep = false;
+            }
+        }
+        if (sweep) {
+            while (!findclick(confirm));
+            while (findclick(confirm));
+            while (!findclick(fighttreant));
+            while (findclick(fighttreant));
+            while (!findclick(sweeptreant));
+            while (findclick(sweeptreant));
+            while (!findclick(confirm));
+            while (findclick(confirm));
+        }
+        if (attack) {
+            while (!findclick(fightingtreant));
+            while (findclick(fightingtreant));
+            while (!findclick(confirmendbattle));
+            while (findclick(confirmendbattle));
+            while (!findclick(fighttreant));
+            while (findclick(fighttreant));
+            while (!findclick(sweeptreant));
+            while (findclick(sweeptreant));
+            while (!findclick(confirm));
+            while (findclick(confirm));
+        }
+        while (!findclick(treantpoint));
+        TREANT = false;
         goHome();
     }
     catch (int e) {
@@ -237,9 +311,10 @@ void SLRD::doDispatch() {
         adb.wait(2000);
         while (findclick(dispatch)) {
             adb.wait(2000);
-            findclick(deploy);
+           while(!findclick(deploy));
             adb.wait(2000);
-            findclick(dispatch); 
+           while(!findclick(dispatch)); 
+           adb.wait(2000);
         }
         DISPATCH = false;
         while (!findclick(croixmenu));
@@ -307,9 +382,10 @@ void SLRD::doHell() {// à revoir quick challenge
             return;
         }     
         while (!findclick(oneclickhell));
-        while (!findclick(confirm, confirmhell));
-        while (!findclick(battle));
-        while (!findclick(endclickhell, endofchallengehell));
+        while (!findclick(confirm));
+        adb.wait(2000);  
+        while (findclick(battle));
+        while (!findclick(endofchallengehell));
         HELL = false;
         goHome();
     }
@@ -339,11 +415,13 @@ void SLRD::doTheater() {
         goHome();
         while (!findclick(store));
         while (!findclick(theaterchoose));
-        for (int i = 0; i < 2; i++) {
+        for (int i = 0; i < 10; i++) {
             while (!find(canwatch));
             while (!findclick(watchtheater));
             while (!find(adwatched));
-           while (!findclick(crossad));  // add the other way to quit
+            while (!findclick(crossad)) {
+                if (!findclick(crossad2))break;
+            }
             adb.wait(2000);
         }
         adb.wait(1000);
@@ -377,6 +455,30 @@ void SLRD::doTheater() {
         return;
     }
 }
+void SLRD::doTrial() {
+    try {
+        goHome();
+        while (!findclick(beast)) {
+            adb.swipe(9 * dimX / 10, dimY / 2, dimX / 10, dimY / 2, 500);
+        }
+        while (!findclick(gianttrial));
+        adb.wait(3000);
+        while (findclick(canexplore)) {
+            adb.wait(3500);
+            if (findclick(beast10k)||findclick(beast5k)) {
+                adb.wait(3000);
+                while (findclick(battle));
+                while (findclick(congrats));
+            }
+        }
+        TRIAL = false;
+        goHome();
+    }
+    catch (int e) {
+        return;
+    }
+
+}
 
 void SLRD::doIcefire() {
     try {
@@ -389,41 +491,41 @@ void SLRD::doIcefire() {
         while (!findclick(manageherbs));
         adb.wait(2000);
         if (find(aromatic)) {
-            adb.touch(cx, dimY * 0.787);
-            adb.touch(cx, dimY * 0.787);
+            adb.touch(C.x, dimY * 0.787);
+            adb.touch(C.x, dimY * 0.787);
         }
         adb.swipe(6 * dimX / 10, dimY / 2, 3.65 * dimX / 10, dimY / 2, 1000);
         if (find(silk)) {
-            adb.touch(cx, dimY * 0.787);
-            adb.touch(cx, dimY * 0.787);
+            adb.touch(C.x, dimY * 0.787);
+            adb.touch(C.x, dimY * 0.787);
         }
         adb.swipe(6 * dimX / 10, dimY / 2, 3.65 * dimX / 10, dimY / 2, 1000);
         if (find(velvet)) {
-            adb.touch(cx, dimY * 0.787);
-            adb.touch(cx, dimY * 0.787);
+            adb.touch(C.x, dimY * 0.787);
+            adb.touch(C.x, dimY * 0.787);
         }
         adb.swipe(6 * dimX / 10, dimY / 2, 3.65 * dimX / 10, dimY / 2, 1000);
         if (find(octagonal)) {
-            adb.touch(cx, dimY * 0.787);
-            adb.touch(cx, dimY * 0.787);
+            adb.touch(C.x, dimY * 0.787);
+            adb.touch(C.x, dimY * 0.787);
         }
         adb.swipe(6 * dimX / 10, dimY / 2, 3.65 * dimX / 10, dimY / 2, 1000);
         if (find(orchid)) {
-            adb.touch(cx, dimY * 0.787);
-            adb.touch(cx, dimY * 0.787);
+            adb.touch(C.x, dimY * 0.787);
+            adb.touch(C.x, dimY * 0.787);
         }
         adb.swipe(6 * dimX / 10, dimY / 2, 3.65 * dimX / 10, dimY / 2, 1000);
         if (find(apricot)) {
-            adb.touch(cx, dimY * 0.787);
-            adb.touch(cx, dimY * 0.787);
+            adb.touch(C.x, dimY * 0.787);
+            adb.touch(C.x, dimY * 0.787);
         }
         if (find(ginseng)) {
-            adb.touch(cx, dimY * 0.787);
-            adb.touch(cx, dimY * 0.787);
+            adb.touch(C.x, dimY * 0.787);
+            adb.touch(C.x, dimY * 0.787);
         }
         if (find(sunflower)) {
-            adb.touch(cx, dimY * 0.787);
-            adb.touch(cx, dimY * 0.787);
+            adb.touch(C.x, dimY * 0.787);
+            adb.touch(C.x, dimY * 0.787);
         }
         adb.wait(1000);
         findclick(croixmenu);
@@ -456,7 +558,7 @@ void SLRD::doTasks() {
         goHome();
         while (!findclick(tasks));
         while (!findclick(claimallfriends));
-        adb.wait(2000);
+        adb.wait(5000);
         while (findclick(congrats)) {
             adb.wait(2000);
         };
@@ -519,12 +621,21 @@ void SLRD::doXiao() {
 void SLRD::getBag() {
     try {
         goHome();
+        int nbdiamondbag = 0;
         swipemiddlemenu();
         while (!findclick(sect));
         while (!findclick(luckybagicon));
         adb.wait(2000);
-        while (findclick(diamondbag) || findclick(confirmbag)) {
+        while (findclick(diamondbag)&&nbdiamondbag<8) {
+            nbdiamondbag++;
             adb.wait(2000);
+            findclick(confirmbag);
+            adb.wait(2000);
+            while (findclick(sectbag)) {
+                adb.wait(2000);
+                findclick(confirmbag);
+                adb.wait(2000);
+            }
         }
         while (!findclick(croixmenu));
         BAG = false;
@@ -537,11 +648,16 @@ void SLRD::getBag() {
 }
 
 int SLRD::getDay() {
-    auto currentTime = std::chrono::system_clock::now();
-    std::time_t currentTimeT = std::chrono::system_clock::to_time_t(currentTime);
-    std::tm localTime;
-    localtime_s(&localTime, &currentTimeT);
-    return localTime.tm_mday;
+    std::time_t t = std::time(nullptr);
+    std::tm now;
+    localtime_s(&now, &t);
+    int dayOfWeek = now.tm_wday;
+    // Ajuster la valeur pour obtenir un chiffre entre 1 et 7
+    if (dayOfWeek == 0) {
+        dayOfWeek = 7; // Dimanche est représenté par 7
+    }
+    std::cout << "Le jour de la semaine est : " << dayOfWeek << std::endl;
+    return dayOfWeek;
 }
 
 void SLRD::swipeleftmenu() {
@@ -560,13 +676,14 @@ void SLRD::swiperightmenu() {
         adb.swipe(dimX - 100, 500,100, 500,500);
     }
 }
+
 bool SLRD::findclick(std::string imgtoclick,std::string imgtofind){
     for (int i = 0; i < 1; i++) {
         adb.screenshot();
         if (op.checkImage(imgtofind))
         {
-            if (op.findImage(imgtoclick,backg, cx, cy)) {
-                adb.touch(cx, cy);
+            if (op.findImage(imgtoclick,backg, C.x, C.y)) {
+                adb.touch(C.x, C.y);
                 return true;
             }
         }
@@ -575,10 +692,10 @@ bool SLRD::findclick(std::string imgtoclick,std::string imgtofind){
 }
 
 int SLRD::getCx()const {
-    return cx;
+    return C.x;
 }
 int SLRD::getCy()const {
-    return cy;
+    return C.y;
 }
 int SLRD::getEventx()const {
     return eventx;
@@ -600,11 +717,12 @@ bool SLRD::findclick(std::string imgtemplate) {
         std::this_thread::sleep_for(std::chrono::seconds(5));
     }
     adb.screenshot();
-    if (op.findImage(imgtemplate,backg, cx, cy)) {
+    if (op.findImage(imgtemplate,backg, C.x, C.y)) {
         rebootCount = 0;
         restartMacro = false;
         previousobject = imgtemplate;
-        adb.touch(cx, cy);
+        adb.touch(C.x, C.y);
+        adb.wait(2000);
         return true;
     }
     if (restartMacro) {
@@ -615,11 +733,83 @@ bool SLRD::findclick(std::string imgtemplate) {
         rebootCount++;
         return false;
     }
-    
 }
 
+bool SLRD::getArray(std::string arrayimg) {
+    while (waitMacro) {
+        std::this_thread::sleep_for(std::chrono::seconds(5));
+    }
+    adb.screenshot();
 
+    if (op.findMultipleImage(arrayimg,listcoords)) {
+        rebootCount = 0;
+        restartMacro = false;
+        return true;
+    }
+    
+    if (restartMacro) {
+        throw 20;
+        return false;
+    }
+    else {
+        rebootCount++;
+        return false;
+    }
+}
 
+void SLRD::selectRangeCoords(std::vector <Coords>&coords, int order, pos range) {
+    int i, j;
+    Coords temp;
+    switch (range) {
+    case haut:
+        for (i = 1; i < coords.size(); ++i) {
+            temp = coords.at(i);
+
+            for (j = i - 1; j >= 0 && coords.at(j).y > temp.y; --j) {
+                coords.at(j + 1) = coords.at(j);
+            }
+            coords.at(j + 1) = temp;
+        } 
+    break;
+
+    case bas:
+        for (i = 1; i < coords.size(); ++i) {
+            temp = coords.at(i);
+
+            for (j = i - 1; j >= 0 && coords.at(j).y < temp.y; --j) {
+                coords.at(j + 1) = coords.at(j);
+            }
+            coords.at(j + 1) = temp;
+        }
+        break;
+    case gauche:
+        for (i = 1; i < coords.size(); ++i) {
+            temp = coords.at(i);
+
+            for (j = i - 1; j >= 0 && coords.at(j).x > temp.x; --j) {
+                coords.at(j + 1) = coords.at(j);
+            }
+            coords.at(j + 1) = temp;
+        }
+        break;
+    case droite: 
+        for (i = 1; i < coords.size(); ++i) {
+            temp = coords.at(i);
+
+            for (j = i - 1; j >= 0 && coords.at(j).x < temp.x; --j) {
+                coords.at(j + 1) = coords.at(j);
+            }
+            coords.at(j + 1) = temp;
+        }
+        break;
+    }
+    if (order>=coords.size()) C = coords.at(coords.size()-1);
+    else C = coords.at(order);
+}
+
+std::vector<Coords>& SLRD::getListCoords() {
+    return listcoords;
+}
 bool SLRD::findclickEvents(std::string imgtemplate) {
     adb.screenshotEvents();
     if (op.findImage(imgtemplate,imgevents, eventx, eventy)) {
@@ -628,14 +818,33 @@ bool SLRD::findclickEvents(std::string imgtemplate) {
     }
     else return false;
 }
-
+bool SLRD::clicktext(std::string targetword) {
+    while (waitMacro) {
+        std::this_thread::sleep_for(std::chrono::seconds(5));
+    }
+    adb.screenshot();
+    if (api.detectText(targetword, C.x, C.y)) {
+        rebootCount = 0;
+        restartMacro = false;
+        adb.touch(C.x, C.y);
+        adb.wait(2000);
+        return true;
+    }
+    if (restartMacro) {
+        throw 20;
+        return false;
+    }
+    else {
+        rebootCount++;
+        return false;
+    }
+}
 bool SLRD::find(std::string imgtemplate) {
     while (waitMacro) {
         std::this_thread::sleep_for(std::chrono::seconds(5));
-        find(previousobject);
     }
     adb.screenshot();
-    if (op.findImage(imgtemplate,backg, cx, cy)) {
+    if (op.findImage(imgtemplate,backg, C.x, C.y)) {
         rebootCount = 0;
         restartMacro = false;
         previousobject = imgtemplate;

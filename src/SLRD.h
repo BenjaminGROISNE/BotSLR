@@ -8,8 +8,9 @@
 #include <chrono>
 #include <atomic>
 #include <filesystem>
+#include "ocr.h"
 
-
+enum pos {haut,bas,gauche,droite};
 
 
 class SLRD
@@ -32,12 +33,17 @@ public:
 	void doRace();
 	void doMystery();
 	void doDispatch();
+	void doTrial();
+	void doTreant();
 	//Outils
 	bool findclick(std::string imgtemplate, std::string background);
 	bool findclick(std::string imgtemplate);
 	bool findclickEvents(std::string imgtemplate);
+	bool getArray(std::string imgtemplate);
 	bool find(std::string imgtemplate);
 	bool findEvents(std::string imgtemplate);
+	bool clicktext(std::string imgtemplate);
+	void selectRangeCoords(std::vector <Coords>&coords,int order,pos range);
 	void swipeleftmenu();
 	void swipemiddlemenu();
 	void swiperightmenu();
@@ -55,11 +61,14 @@ public:
 	void setRebootCount(int nb);
 	int rebootCount;
 	int Order[20];
+	std::vector<Coords>& getListCoords();
 	std::atomic<bool> restartMacro;
 	std::atomic<bool> waitMacro;
 	std::string previousobject;
+	std::vector<std::string>nextimg;
+	std::vector<std::string>multimg;
 	bool endmacro;
-	bool FRIENDS,MAIL,HELL,ICEFIRE,DISPATCH,TOURNAMENT,BAG,HERB,RACE,THEATER,MYSTERY,PAGODA,XIAOWU,ENERGY,TASKS,ABYSS,TYRANT,ELEMENT,TREANT;
+	bool TRIAL,FRIENDS,MAIL,HELL,ICEFIRE,DISPATCH,TOURNAMENT,BAG,HERB,RACE,THEATER,MYSTERY,PAGODA,XIAOWU,ENERGY,TASKS,ABYSS,TYRANT,ELEMENT,TREANT;
 
 
 	//General
@@ -73,7 +82,7 @@ public:
 	std::string claimall = General + "claimall.png";
 	std::string Case = General + "Case.png";
 	std::string BP = General + "BP.png";
-	std::string buy = "buy.png";
+	std::string buy = General + "buy.png";
 	std::string Casecheck = General + "Casecheck.png";
 	std::string changelineup = General + "changelineup.png";
 	std::string confirmpurchase = General + "confirmpurchase.png";
@@ -89,6 +98,7 @@ public:
 	std::string share = General + "share.png";
 	std::string completeall = General + "completeall.png";
 	std::string crossad = General + "crossad.png";
+	std::string crossad2 = General + "crossad2.png";
 	std::string timevoucher = General + "timevoucher.png";
 	std::string start = General + "start.png";
 	std::string autoskills = General + "autoskills.png";
@@ -97,6 +107,8 @@ public:
 	std::string skip = General + "skip.png";
 	std::string adwatched = General + "adwatched.png";
 	std::string waitconnexion = General + "waitconnexion.png";
+	std::string reconnect = General + "reconnect.png";
+
 	
 	//Grandmaster
 	std::string Grandmaster = General + "Grandmaster/";
@@ -136,7 +148,8 @@ public:
 	std::string diamondbag = Bag + "diamondbag.png";
 	std::string luckybagicon = Bag + "luckybagicon.png";
 	std::string confirmbag = Bag + "confirmbag.png";
-
+	std::string sectbag = Bag + "sectbag.png";
+	
 	//Dispatch
 	std::string Dispatch = General + "Sect/Dispatch/";
 	std::string claimdispatch = Dispatch + "claimdispatch.png";
@@ -171,7 +184,16 @@ public:
 	std::string attacktreant = Treant + "attacktreant.png";
 	std::string iconelement = Treant + "iconelement.png";
 	std::string icontreant = Treant + "icontreant.png";
+	std::string iconelementlight = Treant + "iconelementlight.png";
+	std::string icontreantlight = Treant + "icontreantlight.png";
 	std::string sweeptreant = Treant + "sweeptreant.png";
+	std::string claimalltreant = Treant + "claimalltreant.png";
+	std::string confirmendbattle = Treant + "confirmendbattle.png";
+	std::string elementalpoint = Treant + "elementalpoint.png";
+	std::string treantpoint = Treant + "treantpoint.png";
+	std::string fightingtreant = Treant + "fightingtreant.png";
+	std::string fighttreant = Treant + "fighttreant.png";
+
 	//Launch
 	std::string PSLR = "com.soullandrl.gp";
 	std::string SLR = "com.soullandrl.gp/cc.qidea.jsfb.SplashActivity";
@@ -257,6 +279,17 @@ public:
 	std::string spiritsoul = Menu + "spiritsoul.png";
 	std::string whales = Menu + "whales.png";
 
+	//Trial
+	std::string Trial = General + "Beast/Trial/";
+	std::string canexplore = Trial + "canexplore.png";
+	std::string cantexplore = Trial + "cantexplore.png";
+	std::string emptychest = Trial + "emptychest.png";
+	std::string exploredcase = Trial + "exploredcase.png";
+	std::string levelcomplete = Trial + "levelcomplete.png";
+	std::string gianttrial = Trial + "gianttrial.png";
+	std::string levelnotcomplete = Trial + "levelnotcomplete.png";
+	std::string beast10k = Trial + "beast10k.png";
+	std::string beast5k = Trial + "beast5k.png";
 	//XiaoWu
 	std::string XiaoWu = General + "XiaoWu/";
 	std::string confirmxiao =XiaoWu+ "confirmxiao.png";
@@ -337,7 +370,7 @@ public:
 	std::string victoryabyss = Abyss + "victoryabyss.png";
 	
 	//Shop
-	std::string Shop = General + "Shop";
+	std::string Shop = General + "Shop/";
 	std::string gold = Shop + "gold.png";
 	std::string shopdiamond = Shop + "shopdiamond.png";
 	std::string shoprefresh = Shop + "shoprefresh.png";
@@ -358,8 +391,11 @@ public:
 		;
 private:
 	std::string currentfocus;
-	int cx, cy,dimX,dimY,eventx,eventy;
+	std::vector<Coords>listcoords;
+	int dimX,dimY,eventx,eventy;
+	Coords C;
 	fopencv op;
 	fadb adb;
+	ocr api;
 };
 #endif

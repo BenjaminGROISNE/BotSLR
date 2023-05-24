@@ -1,6 +1,5 @@
 #include "SLRD.h"
 #include <iostream>
-#include <fstream>
 #include <tesseract/baseapi.h>
 #include <leptonica/allheaders.h>
 #include <fstream>
@@ -67,7 +66,7 @@ void detect_image(fadb& adb, fopencv& op, SLRD& sl) {
     while (true) {
         if (sl.endmacro)break;
         sl.findclickEvents(sl.busy);
-
+        sl.findclickEvents(sl.reconnect);
         if (sl.findEvents(sl.waitconnexion)) {
             cout <<"X: " << sl.getEventx()<<endl;
             cout << "Y: " << sl.getEventy()<<endl;
@@ -101,21 +100,28 @@ int main()
     ShowWindow(hWnd, SW_SHOW);
     fadb adb;
     fopencv op;
-   ocr api;
+    ocr api;
     const char* EmulatorPath = "C:/Program Files/BlueStacks_nxt/HD-Player.exe";
     int dimX = 0;
     int dimY = 0;
-    int MAXREBOOT = 15;
+    int MAXREBOOT = 50;
    //launchEmulator(EmulatorPath,adb);
+    //adb.connect();
     adb.setDim(dimX, dimY);
     SLRD sl(dimX, dimY);
-    bool stopMacroGame = false;
-    std::thread image_detection_thread(detect_image, std::ref(adb), std::ref(op), std::ref(sl));
-   std::thread not_detected_count_check_thread(stuck, std::ref(sl), std::ref(MAXREBOOT));
-    sl.macroLoop();
+   // std::thread image_detection_thread(detect_image, std::ref(adb), std::ref(op), std::ref(sl));
+   // std::thread not_detected_count_check_thread(stuck, std::ref(sl), std::ref(MAXREBOOT));
+   // sl.macroLoop();
+    //sl.restartMacro = false;
+    //sl.doTrial
+   // sl.findclick(sl.sweeptreant);
+    //image_detection_thread.join();
+   // not_detected_count_check_thread.join();
 
-    image_detection_thread.join();
-   not_detected_count_check_thread.join();
+    op.findMultipleImage(sl.Case, sl.getListCoords());
+    cout<<"size: "<<sl.getListCoords().size();
+   // sl.findclick(sl.treantpoint);
+  
     return 0;
 }
 

@@ -5,6 +5,7 @@
 #include <fstream>
 #include <tesseract/baseapi.h>
 #include <iostream>
+#include <regex>
 using namespace cv;
 using namespace std;
 using namespace tesseract;
@@ -13,7 +14,7 @@ class ocr
 	public:
         ocr();
         ~ocr();
-       void detectText();
+       bool detectText(string targetWord,int x,int y);
 	private:
         string outText, imPath = "./img/screenshot.png";
         Mat im;
