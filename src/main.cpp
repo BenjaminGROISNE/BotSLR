@@ -1,12 +1,9 @@
 #include "SLRD.h"
-#include <iostream>
-#include <tesseract/baseapi.h>
-#include <leptonica/allheaders.h>
-#include <fstream>
-#include "ocr.h"
-#include <Windows.h>
-#include <TlHelp32.h>
-#include <ctime>
+#include "../Windows Kits/10/Include/10.0.22000.0/um/Windows.h"
+#include "../Windows Kits/10/Include/10.0.22000.0/um/TlHelp32.h"
+#include "../MSVC/14.35.32215/include/fstream"
+#include "../MSVC/14.35.32215/include/iostream"
+#include "../MSVC/14.35.32215/include/ctime"
 using namespace cv;
 
 using namespace tesseract;
@@ -105,22 +102,23 @@ int main()
     int dimX = 0;
     int dimY = 0;
     int MAXREBOOT = 50;
-   //launchEmulator(EmulatorPath,adb);
-    //adb.connect();
+  // launchEmulator(EmulatorPath,adb);
     adb.setDim(dimX, dimY);
     SLRD sl(dimX, dimY);
    // std::thread image_detection_thread(detect_image, std::ref(adb), std::ref(op), std::ref(sl));
-   // std::thread not_detected_count_check_thread(stuck, std::ref(sl), std::ref(MAXREBOOT));
-   // sl.macroLoop();
-    //sl.restartMacro = false;
-    //sl.doTrial
-   // sl.findclick(sl.sweeptreant);
-    //image_detection_thread.join();
+  //  std::thread not_detected_count_check_thread(stuck, std::ref(sl), std::ref(MAXREBOOT));
+    // sl.macroLoop();
+    adb.screenshot();
+    api.detectText("y",sl.getCx(),sl.getCy());
+     adb.wait(2000);
+   //// sl.restartMacro = false;
+   // image_detection_thread.join();
    // not_detected_count_check_thread.join();
 
-    op.findMultipleImage(sl.Case, sl.getListCoords());
-    cout<<"size: "<<sl.getListCoords().size();
-   // sl.findclick(sl.treantpoint);
+    //op.findMultipleImage(sl.Case, sl.getListCoords());
+    //cout<<"size: "<<sl.getListCoords().size();
+    
+
   
     return 0;
 }

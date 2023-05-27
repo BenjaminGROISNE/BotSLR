@@ -81,7 +81,7 @@ void fopencv::showImgtest(std::string path) {
 }
 
 
-bool fopencv::findImage(std::string tempimg,std::string backgroundimage, int x, int y) {
+bool fopencv::findImage(std::string tempimg,std::string backgroundimage, int&x, int&y) {
     cv::Mat templateImg = cv::imread(tempimg, cv::IMREAD_COLOR);
 
     cv::Mat background = cv::imread(backgroundimage, cv::IMREAD_COLOR);
@@ -98,6 +98,8 @@ bool fopencv::findImage(std::string tempimg,std::string backgroundimage, int x, 
             cv::Point bottomRight(topLeft.x + templateImg.cols, topLeft.y + templateImg.rows);
             x = (topLeft.x + bottomRight.x) / 2;
             y = (topLeft.y + bottomRight.y) / 2;
+            std::cout << "X: " << x;
+            std::cout << " Y: " << y;
             std::cout << "found maxVal: "<<maxVal<<" " << tempimg << std::endl;
             return true;
         }

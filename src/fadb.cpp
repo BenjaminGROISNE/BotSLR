@@ -26,17 +26,34 @@ void fadb::swipe(int x1, int y1, int x2, int y2, int delay) {
     string command = "swipe " + x1_str + " " + y1_str + " " + x2_str + " " + y2_str + " " + delay_str;
     input(command);
 }
-string fadb::runADB(const string& command) {
-    Poco::Pipe outPipe;
-    Poco::ProcessHandle ph(Poco::Process::launch("adb", { "shell", command }, nullptr, &outPipe, nullptr));
-    Poco::PipeInputStream istr(outPipe);
-    string result(istreambuf_iterator<char>(istr), {});
+std::string fadb::runADB(const std::string& command)
+{
+    std::string adb = "adb shell ";
+    std::string fullCommand = adb + command;
+
+    std::array<char, 128> buffer;
+    std::string result;
+
+    FILE* pipe = _popen(fullCommand.c_str(), "r");
+    if (!pipe)
+    {
+        std::cerr << "Error: Failed to open pipe for command: " << fullCommand << std::endl;
+        return "";
+    }
+
+    while (fgets(buffer.data(), buffer.size(), pipe) != nullptr)
+    {
+        result += buffer.data();
+    }
+
+    _pclose(pipe);
+
     return result;
 }
 
 void fadb::setDim(int& DIMX, int& DIMY) {
     string output = runADB("wm size");
-    string dimension = output.substr(output.find_last_of(" ") + 1);
+   string dimension = output.substr(output.find_last_of(" ") + 1);
     string dimX = "";
     string dimY = "";
     int i = 0;
@@ -96,7 +113,7 @@ void fadb::connect() {
 
    // system("adb disconnect 127.0.0.1");
    // system("adb connect localhost");
-    system("adb connect emulator-5554");
+   // system("adb connect emulator-5554");
 }
 
 string fadb::getPID(string package) {

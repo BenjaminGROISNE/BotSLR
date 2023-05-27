@@ -1,10 +1,11 @@
 #include "SLRD.h"
 
 
+
 SLRD::SLRD(int SizeX,int SizeY) {
     C.x = C.y =eventy=eventx= 0;
     MAIL = FRIENDS = HELL= ICEFIRE= BAG= HERB= RACE= THEATER= MYSTERY= XIAOWU= TRIAL = TASKS= TREANT= ABYSS= ENERGY = PAGODA = TYRANT= ELEMENT= TOURNAMENT=DISPATCH = false;
-    TREANT=true;
+    THEATER=true;
     dimX = SizeX;
     dimY = SizeY;
     endmacro = false;
@@ -32,7 +33,7 @@ void SLRD::macroLoop() {
         switch (restartMacro) {
         case true:
             startSLRD();
-            //restartMacro = false;
+           // restartMacro = false;
             break;
         case false:
             if (HELL) {
@@ -73,11 +74,6 @@ void SLRD::macroLoop() {
             if (XIAOWU) {
                 doXiao();
                 XIAOWU = false;
-                break;
-            }
-            if (DISPATCH) {
-                doDispatch();
-                DISPATCH = false;
                 break;
             }
             if (HERB) {
@@ -170,7 +166,9 @@ void SLRD::startSLRD() {
         adb.launch(SLR);
         adb.wait(3000);
         while (!findclick(croixmenu));
-        while (!findclick(login, server));
+        while (findclick(croixmenu));
+        while (!findclick(iconSLR));
+        while (findclick(iconSLR));
         goHome();
         
     }
@@ -181,9 +179,7 @@ void SLRD::startSLRD() {
 }
 void SLRD::goHome() {
     try {
-        while (!find(iconadless)) {
-            findclick(back);
-        }
+        while (findclick(back));
         for (int i = 0; i < 5; i++) {
             adb.touch(dimX * 0.96, dimY * 0.15);
             adb.wait(200);
@@ -331,15 +327,20 @@ void SLRD::doHerb() {
         while (!findclick(pot)) {
             swiperightmenu();
         }
+        while (findclick(pot));
         while (!findclick(potchoose));
+        while (findclick(potchoose));
         adb.wait(2000);
         while (findclick(claimall)) {
             while (!findclick(congrats));
             while (!findclick(croixmenu));
         }
         while (!findclick(protect));
+        while (findclick(protect));
         while (!findclick(confirmpot));
+        while (findclick(confirmpot));
         while (!findclick(deliver));
+        while (findclick(deliver));
         int day = getDay();
         if (day == 6 || day == 7) {
             while (!findclick(shipnow));
@@ -383,9 +384,11 @@ void SLRD::doHell() {// à revoir quick challenge
         }     
         while (!findclick(oneclickhell));
         while (!findclick(confirm));
-        adb.wait(2000);  
+        while (findclick(confirm));
+        while (!findclick(battle));
         while (findclick(battle));
         while (!findclick(endofchallengehell));
+        while (findclick(endofchallengehell));
         HELL = false;
         goHome();
     }
@@ -415,16 +418,18 @@ void SLRD::doTheater() {
         goHome();
         while (!findclick(store));
         while (!findclick(theaterchoose));
-        for (int i = 0; i < 10; i++) {
+        while (findclick(theaterchoose));
+        for (int i = 0; i < 8; i++) {
             while (!find(canwatch));
             while (!findclick(watchtheater));
-            while (!find(adwatched));
-            while (!findclick(crossad)) {
-                if (!findclick(crossad2))break;
-            }
+            while (!find(adwatched));//see for other adwatched in diff languages
+            //while (!findclick(crossad)) {
+            //    if (!findclick(crossad2))break;
+            //}
+            adb.back();
             adb.wait(2000);
         }
-        adb.wait(1000);
+       /* adb.wait(1000);
         adb.touch(dimX * 0.36, dimY*0.351);
         adb.wait(1000);
         findclick(max);
@@ -447,7 +452,7 @@ void SLRD::doTheater() {
         adb.wait(1000);
         findclick(confirmpurchase);
         adb.wait(1000);
-        findclick(congrats);
+        findclick(congrats);*/
         THEATER = false;
         goHome();
     }
@@ -486,52 +491,36 @@ void SLRD::doIcefire() {
         while (!findclick(icefire)) {
             adb.swipe(9 * dimX / 10, dimY / 2, dimX / 10, dimY / 2, 500);
         }
+        while (findclick(icefire));
         while (!findclick(oneclickroll));
+        while (findclick(oneclickroll));
         while (!findclick(start));
+        while (findclick(start));
         while (!findclick(manageherbs));
+        while (findclick(manageherbs));
         adb.wait(2000);
-        if (find(aromatic)) {
-            adb.touch(C.x, dimY * 0.787);
-            adb.touch(C.x, dimY * 0.787);
+        for (int i = 0; i < 5; ++i) {
+            if (getArray(collection)) {
+                selectRangeCoords(listcoords, 0, gauche);
+                adb.touch(C.x, C.y);
+                adb.touch(C.x, C.y);
+                adb.wait(1000);
+                adb.swipe(6 * dimX / 10, dimY / 2, 3.65 * dimX / 10, dimY / 2, 1000);
+            }
         }
-        adb.swipe(6 * dimX / 10, dimY / 2, 3.65 * dimX / 10, dimY / 2, 1000);
-        if (find(silk)) {
-            adb.touch(C.x, dimY * 0.787);
-            adb.touch(C.x, dimY * 0.787);
-        }
-        adb.swipe(6 * dimX / 10, dimY / 2, 3.65 * dimX / 10, dimY / 2, 1000);
-        if (find(velvet)) {
-            adb.touch(C.x, dimY * 0.787);
-            adb.touch(C.x, dimY * 0.787);
-        }
-        adb.swipe(6 * dimX / 10, dimY / 2, 3.65 * dimX / 10, dimY / 2, 1000);
-        if (find(octagonal)) {
-            adb.touch(C.x, dimY * 0.787);
-            adb.touch(C.x, dimY * 0.787);
-        }
-        adb.swipe(6 * dimX / 10, dimY / 2, 3.65 * dimX / 10, dimY / 2, 1000);
-        if (find(orchid)) {
-            adb.touch(C.x, dimY * 0.787);
-            adb.touch(C.x, dimY * 0.787);
-        }
-        adb.swipe(6 * dimX / 10, dimY / 2, 3.65 * dimX / 10, dimY / 2, 1000);
-        if (find(apricot)) {
-            adb.touch(C.x, dimY * 0.787);
-            adb.touch(C.x, dimY * 0.787);
-        }
-        if (find(ginseng)) {
-            adb.touch(C.x, dimY * 0.787);
-            adb.touch(C.x, dimY * 0.787);
-        }
-        if (find(sunflower)) {
-            adb.touch(C.x, dimY * 0.787);
-            adb.touch(C.x, dimY * 0.787);
+        for (int i = 0; i < 3; ++i) {
+            if (getArray(collection)) {
+                selectRangeCoords(listcoords, i, gauche);
+                adb.touch(C.x, C.y);
+                adb.touch(C.x, C.y);
+                adb.wait(1000);
+                adb.swipe(6 * dimX / 10, dimY / 2, 3.65 * dimX / 10, dimY / 2, 1000);
+            }
         }
         adb.wait(1000);
-        findclick(croixmenu);
+        while(!findclick(croixmenu));
+        while (findclick(croixmenu));
         while (!find(endicefire));
-
-
         ICEFIRE = false;
         goHome();
     }
@@ -876,4 +865,51 @@ void SLRD::CurrentFocus() {
            // std::cout << currentfocus;
         }
     }
+
 }
+
+bool SLRD::stringLogcat(const std::string& searchString)
+{
+    std::string logcatEntry;
+    std::time_t currentTime = std::time(nullptr);
+    std::tm now;
+    std::tm* twoSecondsAgo = nullptr;
+
+    std::time(&currentTime);
+    localtime_s(&now, &currentTime);
+    localtime_s(twoSecondsAgo,&currentTime);
+    twoSecondsAgo->tm_sec -= 2;
+
+    while (std::getline(std::cin, logcatEntry))
+    {
+        std::string timestampStr = logcatEntry.substr(0, logcatEntry.find(' '));
+        std::tm timestamp = {};
+
+        if (sscanf_s(timestampStr.c_str(), "%d-%d-%d", &timestamp.tm_mon, &timestamp.tm_mday, &timestamp.tm_year) == 3)
+        {
+            timestamp.tm_year -= 1900;
+            timestamp.tm_mon -= 1;
+
+            std::string timePart = timestampStr.substr(timestampStr.find(' ') + 1);
+            if (sscanf_s(timePart.c_str(), "%d:%d:%d", &timestamp.tm_hour, &timestamp.tm_min, &timestamp.tm_sec) == 3)
+            {
+                std::time_t timestampTime = std::mktime(&timestamp);
+
+                if (timestampTime >= std::mktime(twoSecondsAgo) && timestampTime <= currentTime)
+                {
+                    if (logcatEntry.find(searchString) != std::string::npos)
+                    {
+                        std::cout << "Match found!" << std::endl;
+                        return true;
+                    }
+                }
+            }
+        }
+    }
+
+    return false;
+}
+
+
+
+

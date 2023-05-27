@@ -1,18 +1,19 @@
 
 #ifndef FADB_H
 #define FADB_H
-#include <string>
-#include <iostream>
-#include <Poco/Process.h>
-#include <Poco/PipeStream.h>
-#include <filesystem>
-#include <iostream>
-#include <istream>
-#include <string>
-#include <time.h>
-#include <chrono>
-#include <thread>
-#include <cstdio>
+
+#include "../Windows Kits/10/Include/10.0.22000.0/um/Windows.h"
+#include "../MSVC/14.35.32215/include/iostream"
+#include "../MSVC/14.35.32215/include/array"
+#include "../MSVC/14.35.32215/include/memory"
+#include "../MSVC/14.35.32215/include/ctime"
+#include "../MSVC/14.35.32215/include/filesystem"
+#include "../MSVC/14.35.32215/include/atomic"
+#include "../MSVC/14.35.32215/include/chrono"
+#include "../MSVC/14.35.32215/include/thread"
+#include "../MSVC/14.35.32215/include/stdexcept"
+#include "../MSVC/14.35.32215/include/cstdio"
+
 
 
 class fadb

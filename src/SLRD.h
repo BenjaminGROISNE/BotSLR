@@ -1,13 +1,17 @@
 #ifndef SLRD_H
 #define SLRD_H
-
-#include <iostream>
+#include "../MSVC/14.35.32215/include/iostream"
+#include "../MSVC/14.35.32215/include/array"
+#include "../MSVC/14.35.32215/include/memory"
+#include "../MSVC/14.35.32215/include/ctime"
+#include "../MSVC/14.35.32215/include/filesystem"
+#include "../MSVC/14.35.32215/include/atomic"
+#include "../MSVC/14.35.32215/include/chrono"
+#include "../MSVC/14.35.32215/include/thread"
+#include "../MSVC/14.35.32215/include/stdexcept"
+#include "../MSVC/14.35.32215/include/cstdio"
 #include "fopencv.h"
 #include "fadb.h"
-#include <thread>
-#include <chrono>
-#include <atomic>
-#include <filesystem>
 #include "ocr.h"
 
 enum pos {haut,bas,gauche,droite};
@@ -51,6 +55,7 @@ public:
 	void macroLoop();
 	bool macroEnd();
 	int getDay();
+	bool stringLogcat(const std::string& searchString);
 	void recursiveSearch(const std::filesystem::path& dirPath, std::vector<std::string>& Focus);
 	int getCx()const;
 	int getCy()const;
@@ -178,6 +183,7 @@ public:
 	std::string sunflower = Icefire + "sunflower.png";
 	std::string velvet = Icefire + "velvet.png";
 	std::string manageherbs = Icefire + "manageherbs.png";
+	std::string collection = Icefire + "collection.png";
 
 	//Treant
 	std::string Treant = General + "Treant/";
@@ -201,6 +207,7 @@ public:
 	std::string croixmenu = Launch+"croixmenu.png";
 	std::string login = Launch + "login.png";
 	std::string server = Launch + "server.png";
+	std::string iconSLR = Launch + "iconSLR.png";
 	
 	//Mystery
 	std::string Mystery = General + "Mystery/";
